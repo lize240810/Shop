@@ -1,0 +1,17 @@
+certifi==2019.9.11
+chardet==3.0.4
+Django==2.2.7
+django-cors-headers==3.1.1
+django-filter==2.2.0
+django-simpleui==3.4
+djangorestframework==3.10.3
+id-validator==1.0.12
+idna==2.8
+Markdown==3.1.1
+Pillow==6.2.1
+PyMySQL==0.9.3
+pytz==2019.3
+requests==2.22.0
+sqlparse==0.3.0
+urllib3==1.25.7
+djangorestframework-jwt==1.11.0
