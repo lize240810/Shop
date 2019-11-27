@@ -8,7 +8,6 @@ admin.site.register(GoodsImage)
 admin.site.register(Banner)
 
 
-
 @admin.register(GoodsCategory)
 class GoodsCategoryAdmin(admin.ModelAdmin):
     """

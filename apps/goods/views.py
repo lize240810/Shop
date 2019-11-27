@@ -15,16 +15,6 @@ class GoodsPagination(PageNumberPagination):
     page_query_param = 'page'
 
 
-# class GoodsListView(generics.ListAPIView):
-#     """
-#     商品列表页
-#     """
-#     # 数据集
-#     queryset = Goods.objects.all()
-#     # 序列化
-#     serializer_class = GoodsSerializer
-#     pagination_class = GoodsPagination
-
 class GoodsListViewSet(viewsets.ReadOnlyModelViewSet):
     """
     商品列表页

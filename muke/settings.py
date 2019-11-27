@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import datetime
 import os
 import sys
 
@@ -150,6 +150,13 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
+# jwt配置
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),  # 过期时间
+    'JWT_AUTH_HEADER_PREFIX': 'Token',  # 头部验证前缀 可修改为 Token
+}
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -194,3 +201,5 @@ REST_FRAMEWORK = {
 }
 # 数据导出
 IMPORT_EXPORT_USE_TRANSACTIONS = True
+# 手机号码正则匹配规则
+REGULAR_MOBILE = r'^1[3456789]\d{9}$'
