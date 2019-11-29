@@ -7,6 +7,7 @@ from .views import *
 router = DefaultRouter()
 # 配置goods的url
 router.register(r'code', SmsCodeViewset)
+router.register(r'users', UserRegViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls))
