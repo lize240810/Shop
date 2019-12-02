@@ -34,13 +34,10 @@ class SmsSerializer(serializers.Serializer):
 
 
 class UserRegSerializer(serializers.ModelSerializer):
-    # 自己添加的字段
-    # required 必填
-    # help_text 提示消息
-    #
     code = serializers.CharField(
         max_length=6, min_length=6, required=True,
-        help_text="验证码",
+        label="验证码",
+        write_only=True,  # 不做序列化
         error_messages={
             'blank': '请输入验证码',
             'required': "请输入验证码",
@@ -55,6 +52,7 @@ class UserRegSerializer(serializers.ModelSerializer):
         allow_null=False,
         # 判断是否唯一
         validators=[UniqueValidator(queryset=User.objects.all(), message="用户名已存在")],
+        label='用户名',
         error_messages={
             'blank': '请输入用户名',
             'required': "请输入用户名"
@@ -64,7 +62,33 @@ class UserRegSerializer(serializers.ModelSerializer):
         required=False,
         allow_blank=True,
         allow_null=True,
+        label='手机号码',
     )
+
+    # 密码设置为掩码
+    password = serializers.CharField(
+        label='密码',
+        # required=True,
+        # allow_blank=False,
+        # allow_null=False,
+        write_only=True,
+        style={'input_type': 'password'},
+        error_messages={
+            'blank': '请输入密码',
+            'required': "请输入密码"
+        }
+    )
+
+    # 方法一、通过重写加密创建
+    # def create(self, validated_data):
+    #     """
+    #     重写create方法 为了加密密码
+    #     """
+    #     # 调用父类的创建方法
+    #     user = super(UserRegSerializer, self).create(validated_data=validated_data)
+    #     user.set_password(validated_data['password'])
+    #     user.save()
+    #     return user
 
     # 验证码出错的可能
     def validate_code(self, code):
@@ -102,9 +126,10 @@ class UserRegSerializer(serializers.ModelSerializer):
         :return:
         """
         attrs['mobile'] = attrs['username']
-        attrs.pop('code')
+        # attrs.pop('code')
+        del attrs['code']
         return attrs
 
     class Meta:
         model = User
-        fields = ('username', 'code', 'mobile')
+        fields = ('username', 'code', 'mobile', 'password')

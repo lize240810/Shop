@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path
 from muke.settings import MEDIA_ROOT, STATIC_ROOT
 from django.views.static import serve
-from rest_framework.authtoken import views
 from rest_framework_jwt.views import obtain_jwt_token
 
 admin.sites.AdminSite.site_header = 'QA管理系统'
@@ -30,7 +29,7 @@ urlpatterns = [
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
     url(r'static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
     path('api/', include('goods.urls')),
-    path('user/', include('users.urls')),
+    path('api/', include('users.urls')),
 ]
 
 urlpatterns += [

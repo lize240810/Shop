@@ -28,7 +28,7 @@ SECRET_KEY = '-dyrnn=4-2b5aza!b&n3a(=lnq-z&dc73$*5h$o6=6%2-f+#4y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0", '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 # 替换系统用户
 
@@ -95,10 +95,6 @@ WSGI_APPLICATION = 'muke.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mxshop',
@@ -190,12 +186,12 @@ SIMPLEUI_STATIC_OFFLINE = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
+
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ]
 }

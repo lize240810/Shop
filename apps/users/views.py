@@ -6,8 +6,9 @@ from rest_framework.mixins import CreateModelMixin
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
-from .serializers import *
+from rest_framework_jwt.serializers import jwt_encode_handler, jwt_payload_handler
 
+from .serializers import *
 User = get_user_model()
 
 
@@ -74,9 +75,25 @@ class SmsCodeViewset(CreateModelMixin, viewsets.GenericViewSet):
             }, status=status.HTTP_201_CREATED)
 
 
-class UserRegViewSet(CreateModelMixin, viewsets.GenericViewSet):
+class UserViewSet(CreateModelMixin, viewsets.GenericViewSet):
     """
-    用户注册验证
+    用户注册
     """
     queryset = User.objects.all()
     serializer_class = UserRegSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+
+        re_dict = serializer.data
+        # 使用注册并登录且返回token
+        payload = jwt_payload_handler(user)
+        re_dict['token'] = jwt_encode_handler(payload)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        return serializer.save()
