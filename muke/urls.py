@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
     path('api/', include('goods.urls')),
     path('api/', include('users.urls')),
+    path('api/', include('user_operation.urls')),
 ]
 
 urlpatterns += [

@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from rest_framework import mixins, viewsets
+from .serializers import *
 
-# Create your views here.
+
+class UserFavViewSets(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
+    """
+    用户收藏
+    """
+    queryset = UserFav.objects.all()
+    serializer_class = UserFavSerializer

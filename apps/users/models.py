@@ -9,7 +9,7 @@ class UserProfile(AbstractUser):
     用户,这里是继承的底层User模型 我们这里只是新增一些字段
     """
     # null=True, blank=True 允许为空
-    name = models.CharField(max_length=30, null=True, blank=True, verbose_name='用户名')
+    name = models.CharField(max_length=30, null=True, blank=True, verbose_name='姓名')
     birthday = models.DateField(null=True, blank=True, verbose_name="出生日期")  # 年龄保存出生日期
     mobile = models.CharField(max_length=11, verbose_name="手机号码")
     gender = models.CharField(max_length=6, choices=(("male", "男"), ("female", "女")),
