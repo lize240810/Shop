@@ -19,6 +19,7 @@ from django.urls import path
 from muke.settings import MEDIA_ROOT, STATIC_ROOT
 from django.views.static import serve
 from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework.documentation import include_docs_urls
 
 admin.sites.AdminSite.site_header = 'QA管理系统'
 admin.sites.AdminSite.site_title = '标题党'
@@ -31,9 +32,10 @@ urlpatterns = [
     path('api/', include('goods.urls')),
     path('api/', include('users.urls')),
     path('api/', include('user_operation.urls')),
+    url(r'^docs/', include_docs_urls("文档"))
 ]
 
 urlpatterns += [
     # url(r'^api-token-auth/', views.obtain_auth_token),  # drf 自带的token 认证
-    url(r'^api-token-auth/', obtain_jwt_token),  # jwt 所带的token认证接口
+    url(r'^login/', obtain_jwt_token),  # jwt 所带的token认证接口
 ]

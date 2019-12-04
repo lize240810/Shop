@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.UserProfile'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -90,7 +89,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'muke.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -125,7 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -145,13 +142,11 @@ AUTHENTICATION_BACKENDS = (
     'users.views.CutomBackend',
 )
 
-
 # jwt配置
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),  # 过期时间
-    'JWT_AUTH_HEADER_PREFIX': 'Token',  # 头部验证前缀 可修改为 Token
+    'JWT_AUTH_HEADER_PREFIX': 'JWT',  # 头部验证前缀 可修改为 Token
 }
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -185,14 +180,15 @@ SIMPLEUI_STATIC_OFFLINE = True
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.IsAuthenticated',
-
-    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    # 'rest_framework.permissions.IsAuthenticated',
+    # ),
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # 全局验证
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # 这里放到明确的view中就可以明确在哪使用认证
     ]
 }
 # 数据导出

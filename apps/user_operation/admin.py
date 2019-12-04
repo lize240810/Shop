@@ -7,6 +7,7 @@ from .models import *
 @admin.register(UserFav)
 class UserFavAdmin(admin.ModelAdmin):
     list_display = ['id', 'goods', 'add_time']
+    list_display_links = ['goods']
 
 
 admin.site.register(UserLeavingMessage)

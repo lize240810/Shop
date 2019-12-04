@@ -9,6 +9,8 @@ class UserFavSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault()
     )
 
+    # goods = GoodsSerializer(many=True)
+
     class Meta:
         model = UserFav
         # 唯一方法二
@@ -19,4 +21,4 @@ class UserFavSerializer(serializers.ModelSerializer):
                 message="已经收藏"
             )
         ]
-        fields = ("user", "goods", "id")
+        fields = ("user", "id", 'goods')

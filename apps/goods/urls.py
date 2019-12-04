@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .views import *
 
 router = DefaultRouter()
+
 # 配置goods的url
 router.register(r'goods', GoodsListViewSet)
 router.register(r'categorys', CategoryViewSet)

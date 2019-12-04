@@ -37,6 +37,7 @@ class UserRegSerializer(serializers.ModelSerializer):
     code = serializers.CharField(
         max_length=6, min_length=6, required=True,
         label="验证码",
+        help_text='验证码',
         write_only=True,  # 不做序列化
         error_messages={
             'blank': '请输入验证码',
@@ -50,6 +51,7 @@ class UserRegSerializer(serializers.ModelSerializer):
         required=True,
         allow_blank=False,
         allow_null=False,
+        help_text='用户名',
         # 判断是否唯一
         validators=[UniqueValidator(queryset=User.objects.all(), message="用户名已存在")],
         label='用户名',
@@ -63,11 +65,13 @@ class UserRegSerializer(serializers.ModelSerializer):
         allow_blank=True,
         allow_null=True,
         label='手机号码',
+        help_text='手机号码',
     )
 
     # 密码设置为掩码
     password = serializers.CharField(
         label='密码',
+        help_text='密码',
         # required=True,
         # allow_blank=False,
         # allow_null=False,
