@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/', include('goods.urls')),
     path('api/', include('users.urls')),
     path('api/', include('user_operation.urls')),
+    path('api/', include('trade.urls')),
     url(r'^docs/', include_docs_urls("文档"))
 ]
 

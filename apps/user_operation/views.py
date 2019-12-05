@@ -9,13 +9,13 @@ from utils.permissions import IsOwnerOrReadOnly
 class UserFavViewSets(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
     """
     list:
-        收藏列表
+        获取收藏列表
     delete:
         取消收藏
     create:
         添加收藏
     retrieve:
-        详细信息
+        判断某个商品是否收藏
     """
     queryset = UserFav.objects.all()
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
@@ -27,8 +27,40 @@ class UserFavViewSets(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin, mi
     # 设置搜索字段, 这里是在get_queryset 之后的数据中进行操作
     lookup_field = 'goods_id'
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return UserFavDetailSerializer
+
+        return self.serializer_class
+
     def get_queryset(self):
         """
         过滤用户
         """
         return UserFav.objects.filter(user=self.request.user)
+
+
+class LeavingMessageSets(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin, mixins.DestroyModelMixin):
+    queryset = UserLeavingMessage.objects.all()
+    serializer_class = LeavingMessageSerializer
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt token 验证
+
+    def get_queryset(self):
+        """
+        过滤用户
+        """
+        return UserLeavingMessage.objects.filter(user=self.request.user)
+
+
+class AddressSets(viewsets.ModelViewSet):
+    queryset = UserAddress.objects.all()
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)  # jwt token 验证
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        """
+        过滤用户
+        """
+        return UserAddress.objects.filter(user=self.request.user)

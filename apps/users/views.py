@@ -2,13 +2,16 @@ from random import sample
 
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from rest_framework.mixins import CreateModelMixin
+from rest_framework import mixins
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-
+from rest_framework import permissions
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework_jwt.serializers import jwt_encode_handler, jwt_payload_handler
 
 from .serializers import *
+
 User = get_user_model()
 
 
@@ -27,7 +30,7 @@ class CutomBackend(ModelBackend):
             return None
 
 
-class SmsCodeViewset(CreateModelMixin, viewsets.GenericViewSet):
+class SmsCodeViewset(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     发送验证码
     """
@@ -75,12 +78,37 @@ class SmsCodeViewset(CreateModelMixin, viewsets.GenericViewSet):
             }, status=status.HTTP_201_CREATED)
 
 
-class UserViewSet(CreateModelMixin, viewsets.GenericViewSet):
+class UserViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
     """
     用户注册
     """
     queryset = User.objects.all()
     serializer_class = UserRegSerializer
+
+    # permission_classes = (permissions.IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
+
+    def get_serializer_class(self):
+        """
+        动态修改serializer序列化
+        """
+        if self.action == 'create':
+            return self.serializer_class
+        else:
+            return UserDetailSerializer
+
+    def get_permissions(self):
+        """
+            动态设置权限
+            - 用户注册时没有权限
+            - 用户修改数据 或者用户查看自己数据时必须登录
+        """
+        # self.action 只有在使用viewset才有这个好处
+        if self.action == 'retrieve':
+            return [permissions.IsAuthenticated()]
+        elif self.action == 'create':
+            return []
+        return []
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -95,5 +123,12 @@ class UserViewSet(CreateModelMixin, viewsets.GenericViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
 
+    def get_object(self):
+        """
+        :return: 从结果集中返回一个用户
+        """
+        return self.request.user
+
     def perform_create(self, serializer):
         return serializer.save()
+
