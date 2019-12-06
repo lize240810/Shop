@@ -7,10 +7,8 @@ router = DefaultRouter()
 
 # 配置goods的url
 router.register(r'shopcarts', ShoppingCartSets)
-
+router.register(r'orders', OrderSets)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
 ]
-
-

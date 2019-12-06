@@ -1,9 +1,15 @@
+import time
+from random import Random
+
 from rest_framework import serializers
 from goods.serializers import GoodsSerializer
 from .models import *
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
     nums = serializers.IntegerField(default=1, label='购买数量', min_value=1, error_messages={
         'min_value': '商品数量不能小于一'
@@ -32,13 +38,43 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShoppingCart
+        fields = ('user', 'nums', 'goods')
+
+
+class ShoppingCartDetailSerializer(serializers.ModelSerializer):
+    goods = GoodsSerializer()
+
+    class Meta:
+        model = ShoppingCart
         fields = ('nums', 'goods')
 
-# class ShoppingCartDetailSerializer(serializers.ModelSerializer):
-#     add_time = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M')
-#
-#     goods = GoodsSerializer()
-#
-#     class Meta:
-#         model = ShoppingCart
-#         fields = '__all__'
+
+class OrderInfoSerializer(serializers.ModelSerializer):
+    # goods = GoodsSerializer()
+
+    order_sn = serializers.HiddenField(
+        default=""
+    )
+
+    add_time = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M:%S')
+
+    def generate_order_sn(self):
+        """
+        生成订单编号
+        :return:
+        """
+        random = Random()
+        order_sn = "{timestr}{userid}{randomstr}".format(
+            timestr=time.strftime('%Y%m%d%H%M%S'),
+            userid=self.required.user.id,
+            randomstr=random.randint(10, 99)  # 区间值
+        )
+        return order_sn
+
+    def validate(self, attrs):
+        attrs['order_sn'] = self.generate_order_sn()
+        return attrs
+
+    class Meta:
+        model = OrderInfo
+        fields = '__all__'

@@ -21,7 +21,7 @@ class ShoppingCart(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return "%s (%d)".format(self.goods.name, self.nums)
+        return "{} ({})".format(self.goods.name, self.nums)
 
 
 class OrderInfo(models.Model):
@@ -31,7 +31,7 @@ class OrderInfo(models.Model):
     ORDER_STATUS = (
         ('success', "成功"),
         ("cancel", "取消"),
-        ("cancel", "待支付")
+        ("paying", "待支付")
     )
     PAY_TYPE = (
         ("alipay", "支付宝"),
@@ -42,12 +42,13 @@ class OrderInfo(models.Model):
     order_sn = models.CharField(max_length=100, unique=True, null=True, blank=True, verbose_name="订单唯一编号")
     # 第三方支付成功返回一个编号 我们与本地关系
     trade_no = models.CharField(max_length=100, unique=True, verbose_name="第三方支付订单编号")
-    pay_status = models.CharField(max_length=30, verbose_name="支付状态")
+    pay_status = models.CharField(choices=ORDER_STATUS, default='paying', max_length=30, verbose_name="支付状态")
     pay_time = models.DateTimeField(null=True, blank=True, verbose_name="支付时间")
     post_script = models.CharField(max_length=200, verbose_name="订单留言")
     order_mount = models.FloatField(default=0.0, verbose_name="支付金额")
 
     # 用户信息
+    # 这里不使用外键 为了防止用户修改外键表的时候出现数据改变 所以写为字符串 一直保存
     address = models.CharField(max_length=100, default="", verbose_name="地址")
     sing_name = models.CharField(max_length=30, default="", verbose_name="签收人")
     singer_mobile = models.CharField(max_length=11, verbose_name="签收人电话")
