@@ -34,6 +34,12 @@ class OrderSets(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin, mixins.D
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return OrderDetailSerializer
+        else:
+            return OrderInfoSerializer
+
     def get_queryset(self):
         """
         设置只能查询到当前用户自己的购物车
@@ -41,5 +47,18 @@ class OrderSets(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin, mixins.D
         return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        """
+        保存订单编号的时候
+        从购物车中遍历数据出来，然后把商品与商品数量赋值给订单
+        然后删除购物车中的商品，保存到订单中
+        """
         order = serializer.save()
+        shop_carts = ShoppingCart.objects.filter(user=self.request.user)
+        for shop_cart in shop_carts:
+            order_goods = OrderGoods()
+            order_goods.goods = shop_cart.goods
+            order_goods.goods_num = shop_cart.nums
+            order_goods.order = order
+            order_goods.save()
+            shop_cart.delete()
         return order

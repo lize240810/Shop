@@ -97,8 +97,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mxshop',
         'USER': 'root',  # 用户名
-        'PASSWORD': '',  # 密码
-        'HOST': '127.0.0.1',  # IP
+        'PASSWORD': 'root',  # 密码
+        'HOST': '47.98.34.221',  # IP
         'POST': '3306',  # 端口
         'CHARSET': 'UTF-8',
         # 'OPTIONS': {'init_command': 'SET storage_engine=INNODB'}
@@ -195,3 +195,5 @@ REST_FRAMEWORK = {
 IMPORT_EXPORT_USE_TRANSACTIONS = True
 # 手机号码正则匹配规则
 REGULAR_MOBILE = r'^1[3456789]\d{9}$'
+
+#  linux 中不会隔段时间推出的工具tmux

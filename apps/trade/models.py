@@ -44,13 +44,13 @@ class OrderInfo(models.Model):
     trade_no = models.CharField(max_length=100, unique=True, verbose_name="第三方支付订单编号")
     pay_status = models.CharField(choices=ORDER_STATUS, default='paying', max_length=30, verbose_name="支付状态")
     pay_time = models.DateTimeField(null=True, blank=True, verbose_name="支付时间")
-    post_script = models.CharField(max_length=200, verbose_name="订单留言")
+    post_script = models.CharField(max_length=200, verbose_name="订单留言", null=True, blank=True)
     order_mount = models.FloatField(default=0.0, verbose_name="支付金额")
 
     # 用户信息
     # 这里不使用外键 为了防止用户修改外键表的时候出现数据改变 所以写为字符串 一直保存
     address = models.CharField(max_length=100, default="", verbose_name="地址")
-    sing_name = models.CharField(max_length=30, default="", verbose_name="签收人")
+    signer_name = models.CharField(max_length=30, default="", verbose_name="签收人")
     singer_mobile = models.CharField(max_length=11, verbose_name="签收人电话")
 
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
@@ -65,7 +65,7 @@ class OrderInfo(models.Model):
 
 class OrderGoods(models.Model):
     """订单商品详情"""
-    order = models.ForeignKey(OrderInfo, on_delete=models.CASCADE, verbose_name="订单编号")
+    order = models.ForeignKey(OrderInfo, on_delete=models.CASCADE, verbose_name="订单编号", related_name="goods")
     goods = models.ForeignKey(Goods, on_delete=models.CASCADE, verbose_name="商品")
     goods_num = models.IntegerField(default=0, verbose_name="订单数量")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
