@@ -33,6 +33,16 @@ class UserFavViewSets(viewsets.ReadOnlyModelViewSet, mixins.CreateModelMixin, mi
 
         return self.serializer_class
 
+    # def perform_create(self, serializer):
+    #     """
+    #     执行创建
+    #     """
+    #     instance = serializer.save()
+    #     # 收藏数+1
+    #     goods = instance.goods
+    #     goods.fav_num += 1
+    #     goods.save()
+
     def get_queryset(self):
         """
         过滤用户

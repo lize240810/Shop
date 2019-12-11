@@ -2,6 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import viewsets, mixins
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from .filters import *
 from .serializers import *
@@ -39,6 +40,14 @@ class GoodsListViewSet(viewsets.ReadOnlyModelViewSet):
         # print(self.request.META)
         print(self.request.user)
         return self.queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        # 修改点击数
+        instance = self.get_object()
+        instance.click_num += 1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
