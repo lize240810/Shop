@@ -89,7 +89,7 @@ class OrderInfoSerializer(serializers.ModelSerializer):
 
     pay_status = serializers.CharField(read_only=True)
 
-    trade_no = serializers.CharField(read_only=True, allow_blank=True, allow_null=True)
+    trade_no = serializers.CharField(read_only=True)
 
     def generate_order_sn(self):
         """

@@ -10,10 +10,12 @@ router = DefaultRouter()
 router.register(r'goods', GoodsListViewSet)
 router.register(r'categorys', CategoryViewSet)
 router.register(r'category_price', GoodsCategoryPriceViewSet)
+router.register(r'banners', BannerViewSet)
+router.register(r'hotsearchs', HotGoodsViewSet)
+router.register(r'indexgoods', IndexCategoryVieweSet)
+
 
 urlpatterns = [
-    # path(r'goods/', GoodsListView.as_view())
-    # path(r'goods/', goods_list)
     url(r'^', include(router.urls))
 ]
 

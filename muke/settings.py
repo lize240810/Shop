@@ -97,8 +97,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mxshop',
         'USER': 'root',  # 用户名
-        'PASSWORD': 'root',  # 密码
-        'HOST': '47.98.34.221',  # IP
+        'PASSWORD': '',  # 密码
+        'HOST': '127.0.0.1',  # IP
+        # 'PASSWORD': 'root',  # 密码
+        # 'HOST': '47.98.34.221',  # IP
         'POST': '3306',  # 端口
         'CHARSET': 'UTF-8',
         # 'OPTIONS': {'init_command': 'SET storage_engine=INNODB'}
