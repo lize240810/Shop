@@ -29,10 +29,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
     url(r'static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
+    path('api/', include('trade.urls')),
     path('api/', include('goods.urls')),
     path('api/', include('users.urls')),
     path('api/', include('user_operation.urls')),
-    path('api/', include('trade.urls')),
     url(r'^docs/', include_docs_urls("文档"))
 ]
 

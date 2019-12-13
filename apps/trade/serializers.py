@@ -4,6 +4,8 @@ from random import Random
 from rest_framework import serializers
 from goods.serializers import GoodsSerializer
 from .models import *
+from apps.utils.alipay import *
+from muke import settings
 
 random = Random()
 
@@ -90,6 +92,39 @@ class OrderInfoSerializer(serializers.ModelSerializer):
     pay_status = serializers.CharField(read_only=True)
 
     trade_no = serializers.CharField(read_only=True)
+
+    alipay_url = serializers.SerializerMethodField(read_only=True)
+
+    def get_alipay_url(self, obj):
+        """
+         与支付宝交付返回支付url
+        :param obj: serializer对象
+        """
+        # 测试用例
+        alipay = AliPay(
+            # 沙箱里面的appid值
+            appid="2016092600599306",
+            # notify_url是异步的url 比 reuturn_url 还重要
+            app_notify_url="http://47.98.34.221:8888/api/alipay/return",  #
+            # 我们自己商户的密钥
+            app_private_key_path=settings.PRIVATE_KEY_PATH,
+            # 支付宝的公钥
+            alipay_public_key_path=settings.ALIPAY_KEY_PATH,  # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+            debug=True,  # 默认False,
+            return_url="http://47.98.34.221:8888/api/alipay/return"  # 支付成功之后导向地址
+        )
+        # 直接支付:生成请求的字符串。
+        url = alipay.direct_pay(
+            # 订单标题
+            subject=obj.order_sn,
+            # 我们商户自行生成的订单号
+            out_trade_no=obj.order_sn,
+            # 订单金额
+            total_amount=obj.order_mount
+        )
+        # 将生成的请求字符串拿到我们的url中进行拼接
+        re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)
+        return re_url
 
     def generate_order_sn(self):
         """

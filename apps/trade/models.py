@@ -28,9 +28,12 @@ class OrderInfo(models.Model):
     """
         订单中的商品是一对多的关系,所以需要多个商品
     """
+
     ORDER_STATUS = (
-        ('success', "成功"),
-        ("cancel", "取消"),
+        ("TRADE_CLOSED", "交易关闭"),
+        ("TRADE_FINISHED", "交易完结"),
+        ("TRADE_SUCCESS", "支付成功"),
+        ("WAIT_BUYER_PAY", "交易创建"),
         ("paying", "待支付")
     )
     PAY_TYPE = (
