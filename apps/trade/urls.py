@@ -11,4 +11,5 @@ router.register(r'orders', OrderSets)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'alipay/return', AliPayView.as_view(), name='alipay'),
 ]

@@ -4,3 +4,8 @@
 ```
 python manage.py collectstatic
 ```
+
+### 前端启动
+```
+npm run dev
+```

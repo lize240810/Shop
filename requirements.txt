@@ -27,6 +27,7 @@ odfpy==1.4.0
 openpyxl==3.0.1
 Pillow==6.2.1
 pyasn1==0.4.8
+pycryptodome==3.9.4
 PyJWT==1.7.1
 PyMySQL==0.9.3
 pytz==2019.3
