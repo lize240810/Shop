@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters',
+    'django_filters',  # 过滤
     'corsheaders',  # 跨域
     'DjangoUeditor',  # 富文本
     'import_export',  # 数据导出
@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'trade.apps.TradeConfig',
     'user_operation.apps.UserOperationConfig',
     'rest_framework.authtoken',  # drf 的 token登录
+    'social_django',  # 第三方登录插件
+
 ]
 
 MIDDLEWARE = [
@@ -73,8 +75,7 @@ ROOT_URLCONF = 'muke.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,6 +83,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -101,8 +104,7 @@ DATABASES = {
         'PASSWORD': 'root',  # 密码
         # 'HOST': '47.98.34.221',  # IP
         'POST': '3306',  # 端口
-        'CHARSET': 'UTF-8',
-        # 'OPTIONS': {'init_command': 'SET storage_engine=INNODB'}
+        'CHARSET': 'UTF-8'
     }
 }
 
@@ -139,8 +141,13 @@ USE_TZ = False  # 时间utc时间，本地时间改为False
 
 DEBUG = True
 
+# 身份验证后端 修改了登录时候验证的后端
 AUTHENTICATION_BACKENDS = (
     'users.views.CutomBackend',
+    'social_core.backends.weibo.WeiboOAuth2',
+    'social_core.backends.qq.QQOAuth2',
+    'social_core.backends.weixin.WeixinOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 # jwt配置
@@ -156,8 +163,12 @@ JWT_AUTH = {
 # python3 manage.py collectstatic
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
+# 上传的图片的存储位置
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -174,6 +185,7 @@ SIMPLEUI_STATIC_OFFLINE = True
 # SIMPLEUI_HOME_TITLE = '百度一下你就知道'
 # SIMPLEUI_HOME_ICON = 'fa fa-user'
 
+# 系统默认分页
 # REST_FRAMEWORK = {
 #     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 #     'PAGE_SIZE': 10,
@@ -190,7 +202,17 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         # 全局验证
         # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',  # 这里放到明确的view中就可以明确在哪使用认证
-    ]
+    ],
+    # 限速配置
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     # 限速类
+    #     'rest_framework.throttling.AnonRateThrottle',  # 用户没有登录的情况
+    #     'rest_framework.throttling.UserRateThrottle'  # 用户登录之后的情况
+    # ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '50/min',  # 匿名用户
+        'user': '100/min'  # 登录之后的用户
+    }
 }
 # 数据导出
 IMPORT_EXPORT_USE_TRANSACTIONS = True
@@ -202,3 +224,30 @@ REGULAR_MOBILE = r'^1[3456789]\d{9}$'
 # 支付宝相关配置
 PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/private_2048.txt')
 ALIPAY_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/alipay_key_2048.txt')
+# notify_url 与 return_url
+APP_NOTIFY_URL = "http://47.98.34.221:8888/api/alipay/return"
+RETURN_URL = "http://47.98.34.221:8888/api/alipay/return"
+# 设置缓存过期时间
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 15
+}
+
+# 配置redis缓存
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://:12345@127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# 第三方登录的 KEY 与 SECRET
+# 微博
+SOCIAL_AUTH_WEIBO_KEY = '501474927'
+SOCIAL_AUTH_WEIBO_SECRET = '43e4da02b96d2d258b069cac3163315e'
+
+# 登录成功之后跳转的url
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'
+

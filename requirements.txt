@@ -42,3 +42,5 @@ uritemplate==3.0.0
 urllib3==1.25.7
 xlrd==1.2.0
 xlwt==1.3.0
+social-auth-app-django
+django_redis

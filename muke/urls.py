@@ -16,19 +16,19 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path
-from muke.settings import MEDIA_ROOT, STATIC_ROOT
+from muke.settings import MEDIA_ROOT, STATICFILES_DIRS
 from django.views.static import serve
 from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework.documentation import include_docs_urls
 
-admin.sites.AdminSite.site_header = 'QA管理系统'
+admin.sites.AdminSite.site_header = '管理系统'
 admin.sites.AdminSite.site_title = '标题党'
-admin.sites.AdminSite.index_title = '你想干嘛就干嘛'
+admin.sites.AdminSite.index_title = '管理系统'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
-    url(r'static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
+    url(r'static/(?P<path>.*)$', serve, {"document_root": STATICFILES_DIRS[0]}),
     path('api/', include('trade.urls')),
     path('api/', include('goods.urls')),
     path('api/', include('users.urls')),

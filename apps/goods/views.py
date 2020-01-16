@@ -1,21 +1,26 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import viewsets, mixins
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import PageNumberPagination  # 分页
 from rest_framework.response import Response
+from rest_framework_extensions.cache.mixins import CacheResponseMixin  # 缓存
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle  # 限速 防爬虫
 
 from .filters import *
 from .serializers import *
 
 
 class GoodsPagination(PageNumberPagination):
+    """
+    分页
+    """
     page_size = 12
     # max_page_size = 80
     page_size_query_param = 'page_size'
     page_query_param = 'page'
 
 
-class GoodsListViewSet(viewsets.ReadOnlyModelViewSet):
+class GoodsListViewSet(CacheResponseMixin, viewsets.ReadOnlyModelViewSet):
     """
     商品列表页
     """
@@ -27,14 +32,14 @@ class GoodsListViewSet(viewsets.ReadOnlyModelViewSet):
     # 分页
     pagination_class = GoodsPagination
     # 过滤
-    # token 认证
-    # authentication_classes = (TokenAuthentication, )
-
+    # 过滤类型
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     # filter_fields = ('shop_price',)  # 相等过滤
     filter_class = GoodsFilter
-    search_fields = ('name',)
-    ordering_fields = ('sold_num', 'shop_price')
+    search_fields = ('name',)  # 查询
+    ordering_fields = ('sold_num', 'shop_price')  # 排序
+    # 限速设置
+    throttle_classes = (AnonRateThrottle, UserRateThrottle)
 
     def get_queryset(self):
         # print(self.request.META)
@@ -53,12 +58,6 @@ class GoodsListViewSet(viewsets.ReadOnlyModelViewSet):
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = GoodsCategory.objects.filter(category_type=1)
     serializer_class = CategorySerializer
-    # lookup_field = ''
-
-    # def get_queryset(self):
-    #     if self.kwargs:
-    #         return GoodsCategory.objects.filter(id=self.kwargs['pk'])
-    #     return self.queryset
 
 
 class GoodsCategoryPriceViewSet(viewsets.ReadOnlyModelViewSet):
